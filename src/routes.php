@@ -110,7 +110,6 @@ $app->get('/fetch-balances', function ($request, $response, array $args) {
     $tokenIo = new TokenSample();
     $member = $tokenIo->getMember();
 
-    $member->useAccessToken($tokenId, false);
     $token = $member->getToken($tokenId);
 
     $resources = $token->getPayload()->getAccess()->getResources();
@@ -133,8 +132,6 @@ $app->get('/fetch-balances', function ($request, $response, array $args) {
         $current = $account->getCurrentBalance(\Io\Token\Proto\Common\Security\Key\Level::STANDARD);
         $balances[] = sprintf('%s %s', $current->getValue(), $current->getCurrency());
     }
-
-    $member->clearAccessToken();
 
     $data = array('balances' => $balances);
     return $response->withJson($data);
