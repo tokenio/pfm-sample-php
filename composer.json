@@ -1,6 +1,6 @@
 {
   "name": "tokenio/pfm-sample-php",
-  "description": "PHP personal sample with Slim framework for interacting with the Token System",
+  "description": "PHP PFM sample with Slim framework for interacting with the Token System",
   "homepage": "https://token.io",
   "authors": [
     {
