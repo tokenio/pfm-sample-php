@@ -110,6 +110,7 @@ $app->get('/fetch-balances', function ($request, $response, array $args) {
     $tokenIo = new TokenSample();
     $member = $tokenIo->getMember();
 
+    $member = $member->forAccessToken($tokenId);
     $token = $member->getToken($tokenId);
 
     $resources = $token->getPayload()->getAccess()->getResources();
