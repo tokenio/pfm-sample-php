@@ -78,7 +78,7 @@ class TokenSample
         $tokenBuilder = \Tokenio\Http\Request\AccessTokenBuilder::createWithAlias($alias)->forAll();
 
         $request = TokenRequest::builder($tokenBuilder->build())
-            ->addOption(TokenRequestOptions::REDIRECT_URL, 'http://localhost:9090/fetch-balances')
+            ->addOption(TokenRequestOptions::REDIRECT_URL, 'http://localhost:3000/fetch-balances')
             ->build();
 
         $requestId = $this->member->storeTokenRequest($request);

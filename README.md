@@ -17,6 +17,6 @@ The server operates against Token's Sandbox environment by default.
 This testing environment lets you try out UI and account flows without
 exposing real bank accounts.
 
-The server shows a web page at `localhost:9090`. The page has a Link with Token button.
+The server shows a web page at `localhost:3000`. The page has a Link with Token button.
 Clicking the button displays Token UI that requests an Access Token.
 When the app has an Access Token, it uses that Access Token to get account balances.
