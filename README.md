@@ -5,7 +5,9 @@ Simple personal finance app that illustrates Token.io's Access Tokens
 This sample app shows how to request Token's Access Tokens, useful
 for fetching account information.
 
-To run this code, you need PHP 5.5.0 or later.
+To run this code, you need PHP 5.5.0 or later and the [gRPC PHP extension](https://grpc.io/docs/quickstart/php.html#install-the-grpc-php-extension).
+
+To install dependencies: `composer install`
 
 To run, `composer start`
 
