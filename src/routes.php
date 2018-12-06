@@ -4,7 +4,7 @@ use Io\Token\Proto\Common\Alias\Alias;
 use Tokenio\Config\TokenCluster;
 use Tokenio\Config\TokenEnvironment;
 use Tokenio\Config\TokenIoBuilder;
-use Tokenio\Http\Request\TokenRequest;
+use Io\Token\Proto\Common\Token\TokenRequest;
 use Tokenio\Http\Request\TokenRequestOptions;
 use Tokenio\Security\UnsecuredFileSystemKeyStore;
 use Tokenio\Util\Strings;
@@ -100,9 +100,9 @@ class TokenSample
         $alias = $this->member->getFirstAlias();
         $tokenBuilder = \Tokenio\Http\Request\AccessTokenBuilder::createWithAlias($alias)->forAll();
 
-        $request = TokenRequest::builder($tokenBuilder->build())
-            ->addOption(TokenRequestOptions::REDIRECT_URL, 'http://localhost:3000/fetch-balances')
-            ->build();
+        $request = new TokenRequest();
+        $request->setPayload($tokenBuilder->build())
+                ->setOptions([TokenRequestOptions::REDIRECT_URL => 'http://localhost:3000/fetch-balances']);
 
         $requestId = $this->member->storeTokenRequest($request);
 
