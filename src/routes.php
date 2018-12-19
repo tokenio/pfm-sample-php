@@ -3,9 +3,9 @@
 use Io\Token\Proto\Common\Alias\Alias;
 use Tokenio\TokenCluster;
 use Tokenio\TokenEnvironment;
-use Tokenio\TokenIoBuilder;
-use Tokenio\Rpc\Request\TokenRequest;
-use Tokenio\Rpc\Request\TokenRequestOptions;
+use Tokenio\TokenClientBuilder;
+use Tokenio\TokenRequest;
+use Tokenio\TokenRequestOptions;
 use Tokenio\Security\UnsecuredFileSystemKeyStore;
 use Tokenio\Util\Strings;
 
@@ -33,7 +33,7 @@ class TokenSample
 
     private function initializeSDK()
     {
-        $builder = new TokenIoBuilder();
+        $builder = new TokenClientBuilder();
         $builder->connectTo(TokenCluster::get(TokenEnvironment::SANDBOX));
         $builder->developerKey(self::DEVELOPER_KEY);
         $builder->withKeyStore($this->keyStore);
@@ -98,7 +98,7 @@ class TokenSample
     public function generateTokenRequestUrl()
     {
         $alias = $this->member->getFirstAlias();
-        $tokenBuilder = \Tokenio\Rpc\Request\AccessTokenBuilder::createWithAlias($alias)->forAll();
+        $tokenBuilder = \Tokenio\AccessTokenBuilder::createWithAlias($alias)->forAll();
 
         $request = TokenRequest::builder($tokenBuilder->build())
             ->addOption(TokenRequestOptions::REDIRECT_URL, 'http://localhost:3000/fetch-balances')
