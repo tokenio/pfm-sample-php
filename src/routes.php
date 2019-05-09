@@ -32,7 +32,7 @@ class TokenSample
     private function initializeSDK()
     {
         $builder = new TokenClientBuilder();
-        $builder->connectTo(TokenCluster::get(TokenEnvironment::DEVELOPMENT));
+        $builder->connectTo(TokenCluster::get(TokenEnvironment::SANDBOX));
         $builder->withKeyStore($this->keyStore);
         return $builder->build();
     }
