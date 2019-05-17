@@ -127,7 +127,7 @@ $app->post('/request-balances', function ($request, $response, array $args) {
     $csrf = Strings::generateNonce();
     setcookie("csrf_token", $csrf);
     $tokenIo = new TokenSample();
-    return $response->withRedirect($tokenIo->generateTokenRequestUrl($csrf), 302);
+    return $tokenIo->generateTokenRequestUrl($csrf);
 });
 
 $app->get('/fetch-balances', function ($request, $response, array $args) {
