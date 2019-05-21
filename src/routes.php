@@ -94,15 +94,16 @@ class TokenSample
         return $this->member;
     }
 
-    public function generateTokenRequestUrl($csrfToken)
+    public function generateTokenRequestUrl($csrfToken, $baseUrl)
     {
+        $redirectUrl = $baseUrl . "/fetch-balances";
         $alias = $this->member->getFirstAlias();
 
         $tokenRequest = \Tokenio\TokenRequest::accessTokenRequestBuilder([ResourceType::ACCOUNTS, ResourceType::BALANCES])
             ->setToMemberId($this->member->getMemberId())
             ->setToAlias($alias)
             ->setRefId(Strings::generateNonce())
-            ->setRedirectUrl("http://localhost:3000/fetch-balances")
+            ->setRedirectUrl($redirectUrl)
             ->setCsrfToken($csrfToken)
             ->build();
 
@@ -127,7 +128,8 @@ $app->post('/request-balances', function ($request, $response, array $args) {
     $csrf = Strings::generateNonce();
     setcookie("csrf_token", $csrf);
     $tokenIo = new TokenSample();
-    return $tokenIo->generateTokenRequestUrl($csrf);
+    $uri = $request->getUri();
+    return $tokenIo->generateTokenRequestUrl($csrf, $uri->getBaseUrl());
 });
 
 $app->get('/fetch-balances', function ($request, $response, array $args) {
