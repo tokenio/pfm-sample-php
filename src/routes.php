@@ -94,7 +94,7 @@ class TokenSample
         return $this->member;
     }
 
-    public function generateTokenRequestUrl($csrfToken)
+    public function generateTokenRequestUrl($csrfToken, $redirectUrl)
     {
         $alias = $this->member->getFirstAlias();
 
@@ -102,7 +102,7 @@ class TokenSample
             ->setToMemberId($this->member->getMemberId())
             ->setToAlias($alias)
             ->setRefId(Strings::generateNonce())
-            ->setRedirectUrl("http://localhost:3000/fetch-balances")
+            ->setRedirectUrl($redirectUrl)
             ->setCsrfToken($csrfToken)
             ->build();
 
@@ -122,16 +122,57 @@ $app->get('/', function ($request, $response, array $args) {
     return $this->renderer->render($response, 'index.phtml', $args);
 });
 
-$app->post('/request-balances', function ($request, $response, array $args) {
-    $this->logger->info("Request balances.");
+$app->get('/request-balances', function ($request, $response) {
+    $this->logger->info("Request balances (redirect).");
+
     $csrf = Strings::generateNonce();
     setcookie("csrf_token", $csrf);
     $tokenIo = new TokenSample();
-    return $response->withRedirect($tokenIo->generateTokenRequestUrl($csrf), 302);
+    $uri = $request->getUri();
+    $tokenRequestUrl = $tokenIo->generateTokenRequestUrl(
+        $csrf,
+        $uri->getBaseUrl() . "/fetch-balances"
+    );
+    return $response->withRedirect($tokenRequestUrl, 302);
 });
 
-$app->get('/fetch-balances', function ($request, $response, array $args) {
-    $this->logger->info("Fetch balances.");
+$app->post('/request-balances-popup', function ($request, $response) {
+    $this->logger->info("Request balances (popup).");
+
+    $csrf = Strings::generateNonce();
+    setcookie("csrf_token", $csrf);
+    $tokenIo = new TokenSample();
+    $uri = $request->getUri();
+    return $tokenIo->generateTokenRequestUrl(
+        $csrf,
+        $uri->getBaseUrl() . "/fetch-balances-popup"
+    );
+});
+
+$app->get('/fetch-balances', function ($request, $response) {
+    $this->logger->info("Fetch balances (redirect).");
+
+    $tokenSample = new TokenSample();
+    $callback = $tokenSample->getTokenRequestCallback($request->getUri(), $request->getCookieParams()["csrf_token"]);
+
+    $member = $tokenSample->getMember();
+
+    $representable = $member->forAccessToken($callback->getTokenId(), false);
+    $accounts = $representable->getAccounts();
+
+    $balances = array();
+
+    foreach ($accounts as $account) {
+        $balance = $account->getBalance(\Io\Token\Proto\Common\Security\Key\Level::STANDARD)->getCurrent();
+        $balances[] = Util::toJson($balance);
+    }
+
+    $data = array('balances' => $balances);
+    return $response->withJson($data);
+});
+
+$app->get('/fetch-balances-popup', function ($request, $response) {
+    $this->logger->info("Fetch balances (popup).");
 
     $tokenSample = new TokenSample();
     $callback = $tokenSample->getTokenRequestCallback($request->getUri(), $request->getCookieParams()["csrf_token"]);
