@@ -83,6 +83,8 @@ class TokenSample
 
         $member = $this->tokenClient->createBusinessMember($alias);
         $member->setProfile((new \Io\Token\Proto\Common\Member\Profile())->setDisplayNameFirst("PFM Demo"));
+        $member->setProfilePicture("image/png", file_get_contents("southside.png"));
+
         return $member;
     }
 
